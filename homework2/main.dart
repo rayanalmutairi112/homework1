@@ -1,0 +1,240 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const CupertinoApp(
+      debugShowCheckedModeBanner: false,
+      home: Center(
+        child: IPhoneFrame(
+          child: HomeIOS(),
+        ),
+      ),
+    );
+  }
+}
+
+/// شاشة iOS داخل إطار آيفون
+class HomeIOS extends StatelessWidget {
+  const HomeIOS({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('Flutter layout demo'),
+      ),
+      child: SafeArea(
+        child: ListView(
+          children: [
+            // صورة (Network) بدل assets
+            Image.network(
+              "https://th.bing.com/th/id/OIP.cxvRDP_Nq6B71J0ztAfF9wHaGS?pid=ImgDetMain",
+              height: 220,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stack) {
+                return Container(
+                  height: 220,
+                  alignment: Alignment.center,
+                  child: const Text("Image failed to load"),
+                );
+              },
+            ),
+
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _TitleSection(),
+                  ),
+                  _StarSection(),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            const _ButtonsRow(),
+
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 24),
+              child: Text(
+                "Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. "
+                "Situated 1,578 meters above sea level, it is one of the larger Alpine Lakes. "
+                "A gondola ride from Kandersteg, followed by a half-hour walk through pastures "
+                "and pine forest, leads you to the lake, which warms to 20 degrees Celsius in the summer.",
+                style: TextStyle(fontSize: 14, height: 1.4),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TitleSection extends StatelessWidget {
+  const _TitleSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Oeschinen Lake Campground",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        SizedBox(height: 4),
+        Text(
+          "Kandersteg, Switzerland",
+          style: TextStyle(fontSize: 13, color: CupertinoColors.systemGrey),
+        ),
+      ],
+    );
+  }
+}
+
+class _StarSection extends StatelessWidget {
+  const _StarSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: const [
+        Icon(CupertinoIcons.star_fill, color: CupertinoColors.systemRed, size: 18),
+        SizedBox(width: 6),
+        Text("41", style: TextStyle(fontSize: 14)),
+      ],
+    );
+  }
+}
+
+class _ButtonsRow extends StatelessWidget {
+  const _ButtonsRow();
+
+  Widget _btn(IconData icon, String text) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: CupertinoColors.activeBlue, size: 22),
+        const SizedBox(height: 6),
+        Text(
+          text,
+          style: const TextStyle(
+            color: CupertinoColors.activeBlue,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _BtnItem(icon: CupertinoIcons.phone, text: "CALL"),
+          _BtnItem(icon: CupertinoIcons.location, text: "ROUTE"),
+          _BtnItem(icon: CupertinoIcons.share, text: "SHARE"),
+        ],
+      ),
+    );
+  }
+}
+
+class _BtnItem extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  const _BtnItem({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: CupertinoColors.activeBlue, size: 22),
+        const SizedBox(height: 6),
+        Text(
+          text,
+          style: const TextStyle(
+            color: CupertinoColors.activeBlue,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        )
+      ],
+    );
+  }
+}
+
+/// إطار آيفون (الحجم + الزوايا + النوتش)
+class IPhoneFrame extends StatelessWidget {
+  final Widget child;
+  const IPhoneFrame({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    // مقاس قريب من iPhone 14 Pro (نسبة تقريبية)
+    const double phoneWidth = 390;
+    const double phoneHeight = 844;
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0E0E10),
+        borderRadius: BorderRadius.circular(44),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 30,
+            spreadRadius: 2,
+            offset: Offset(0, 18),
+            color: Color(0x55000000),
+          ),
+        ],
+      ),
+      child: SizedBox(
+        width: phoneWidth,
+        height: phoneHeight,
+        child: Stack(
+          children: [
+            // الشاشة
+            ClipRRect(
+              borderRadius: BorderRadius.circular(34),
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: CupertinoColors.systemBackground),
+                child: child,
+              ),
+            ),
+
+            // النوتش
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                margin: const EdgeInsets.only(top: 10),
+                width: 140,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0E0E10),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
